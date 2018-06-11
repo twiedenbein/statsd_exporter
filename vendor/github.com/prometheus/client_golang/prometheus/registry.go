@@ -247,23 +247,10 @@ func (r *registry) Register(c Collector) (Collector, error) {
 			collectorID += desc.id
 		}
 
-		// Are all the label names and the help string consistent with
-		// previous descriptors of the same name?
-		// First check existing descriptors...
-		if dimHash, exists := r.dimHashesByName[desc.fqName]; exists {
-			if dimHash != desc.dimHash {
-				return nil, fmt.Errorf("a previously registered descriptor with the same fully-qualified name as %s has different label names or a different help string", desc)
-			}
-		} else {
-			// ...then check the new descriptors already seen.
-			if dimHash, exists := newDimHashesByName[desc.fqName]; exists {
-				if dimHash != desc.dimHash {
-					return nil, fmt.Errorf("descriptors reported by collector have inconsistent label names or help strings for the same fully-qualified name, offender is %s", desc)
-				}
-			} else {
-				newDimHashesByName[desc.fqName] = desc.dimHash
-			}
-		}
+
+		// we don't want to validate
+		newDimHashesByName[desc.fqName] = desc.dimHash
+
 	}
 	// Did anything happen at all?
 	if len(newDescIDs) == 0 {
